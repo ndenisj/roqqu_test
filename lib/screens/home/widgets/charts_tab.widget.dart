@@ -1,71 +1,216 @@
+import 'package:candlestick_digiasset/candlestick_digiasset.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:roqqu_test/screens/home/home.controller.dart';
 import 'package:roqqu_test/styles/roqqu.theme.dart';
 
-class ChartsTabWidget extends StatefulWidget {
-  const ChartsTabWidget({super.key});
+class ChartsTabWidget extends StatelessWidget {
+  ChartsTabWidget({super.key});
 
-  @override
-  State<ChartsTabWidget> createState() => _ChartsTabWidgetState();
-}
-
-class _ChartsTabWidgetState extends State<ChartsTabWidget>
-    with SingleTickerProviderStateMixin {
-  late TabController _timeTabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _timeTabController = TabController(vsync: this, length: 10);
-  }
-
-  @override
-  void dispose() {
-    _timeTabController.dispose();
-    super.dispose();
-  }
+  HomeController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _subTab(context),
+        _buildIntervals(context),
         const SizedBox(height: 10),
         const Divider(),
+        SizedBox(
+          height: Get.height * 0.4,
+          child: StreamBuilder(
+              stream: controller.channel == null
+                  ? null
+                  : controller.channel!.stream,
+              builder: (context, snapshot) {
+                controller.updateCandlesFromSnapshot(snapshot);
+                return Obx(
+                  () => Candlesticks(
+                    key: Key(controller.currentSymbol.value +
+                        controller.currentInterval.value),
+                    candleStyle: CandleStyle(),
+                    candles: controller.candles.value,
+                    onLoadMoreCandles: controller.loadMoreCandles,
+                    highLowTextColor: RoqquTheme.of(context).primaryColor!,
+                    showToolbar: true,
+                    actions: [
+                      ToolBarAction(
+                        width: 100,
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SymbolsSearchModal(
+                                symbols: controller.symbols,
+                                onSelect: (value) {
+                                  controller.fetchCandles(
+                                      value, controller.currentInterval.value);
+                                },
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          controller.currentSymbol.value,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+        ),
       ],
     );
   }
 
-  Widget _subTab(BuildContext context) {
+  Widget _buildIntervals(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: 10),
       height: 30,
-      child: TabBar(
-        controller: _timeTabController,
-        isScrollable: true,
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(60),
-          color: RoqquTheme.of(context).activeTabColor,
-        ),
-        // labelPadding: EdgeInsets.zero,
-        padding: EdgeInsets.zero,
-        indicatorPadding: EdgeInsets.zero,
-        labelColor: RoqquTheme.of(context).primaryText,
-        unselectedLabelColor: RoqquTheme.of(context).secondaryText,
-        labelStyle: Theme.of(context).textTheme.bodyLarge,
-        tabs: [
-          const Tab(text: 'Time'),
-          const Tab(text: '1H'),
-          const Tab(text: '2H'),
-          const Tab(text: '4H'),
-          const Tab(text: '1D'),
-          const Tab(text: '1W'),
-          const Tab(text: '1M'),
-          const Tab(icon: Icon(Remix.arrow_down_s_line)),
-          const Tab(icon: Icon(Remix.line_chart_line)),
-          const Tab(text: 'Fx Indicators'),
-        ],
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: controller.intervals
+            .map(
+              (e) => Obx(
+                () => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  width: 50,
+                  height: 30,
+                  child: RawMaterialButton(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusDirectional.circular(50),
+                    ),
+                    fillColor: controller.currentInterval.value == e
+                        ? RoqquTheme.of(context).activeTabColor
+                        : Colors.transparent,
+                    onPressed: () {
+                      controller.fetchCandles(
+                          controller.currentSymbol.value, e);
+                    },
+                    child: Text(
+                      e,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
       ),
+    );
+  }
+}
+
+/////////
+///
+///
+///
+///
+class SymbolsSearchModal extends StatefulWidget {
+  const SymbolsSearchModal({
+    Key? key,
+    required this.onSelect,
+    required this.symbols,
+  }) : super(key: key);
+
+  final Function(String symbol) onSelect;
+  final List<String> symbols;
+
+  @override
+  State<SymbolsSearchModal> createState() => _SymbolSearchModalState();
+}
+
+class _SymbolSearchModalState extends State<SymbolsSearchModal> {
+  String symbolSearch = "";
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          width: 300,
+          height: MediaQuery.of(context).size.height * 0.75,
+          color: Theme.of(context).backgroundColor.withOpacity(0.5),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomTextField(
+                  onChanged: (value) {
+                    setState(() {
+                      symbolSearch = value;
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  children: widget.symbols
+                      .where((element) => element
+                          .toLowerCase()
+                          .contains(symbolSearch.toLowerCase()))
+                      .map((e) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              width: 50,
+                              height: 30,
+                              child: RawMaterialButton(
+                                elevation: 0,
+                                fillColor: const Color(0xFF494537),
+                                onPressed: () {
+                                  widget.onSelect(e);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  e,
+                                  style: const TextStyle(
+                                    color: Color(0xFFF0B90A),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomTextField extends StatelessWidget {
+  const CustomTextField({Key? key, required this.onChanged}) : super(key: key);
+  final void Function(String) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      autofocus: true,
+      cursorColor: const Color(0xFF494537),
+      decoration: const InputDecoration(
+        prefixIcon: Icon(
+          Icons.search,
+          color: Color(0xFF494537),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(width: 3, color: Color(0xFF494537)), //<-- SEE HER
+        ),
+        border: OutlineInputBorder(
+          borderSide:
+              BorderSide(width: 3, color: Color(0xFF494537)), //<-- SEE HER
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(width: 3, color: Color(0xFF494537)), //<-- SEE HER
+        ),
+      ),
+      onChanged: onChanged,
     );
   }
 }

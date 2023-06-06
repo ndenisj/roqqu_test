@@ -57,18 +57,9 @@ ThemeData darkTheme(context) {
     tabBarTheme: TabBarTheme(),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: EdgeInsets.all(8),
-      border: OutlineInputBorder(
-        borderSide: BorderSide(color: RoqquTheme.of(context).inputBorderColor!),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: RoqquTheme.of(context).inputBorderColor!),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: RoqquTheme.of(context).inputBorderColor!),
-        borderRadius: BorderRadius.circular(10),
-      ),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
     ),
   );
 }

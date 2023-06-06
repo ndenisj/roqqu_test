@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remixicon/remixicon.dart';
 import 'package:roqqu_test/styles/roqqu.theme.dart';
 
 class BuyTabWidget extends StatefulWidget {
@@ -29,9 +30,15 @@ class _BuyTabWidgetState extends State<BuyTabWidget>
     return Column(
       children: [
         _buildBuySubTab(context),
-        SizedBox(height: 20),
-        TextFormField(
-          style: Theme.of(context).textTheme.bodyMedium,
+        const SizedBox(height: 20),
+        const Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                BuySellTextFieldContainer(),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -57,6 +64,66 @@ class _BuyTabWidgetState extends State<BuyTabWidget>
           Tab(text: 'Limit'),
           Tab(text: 'Market'),
           Tab(text: 'Stop-Limit'),
+        ],
+      ),
+    );
+  }
+}
+
+class BuySellTextFieldContainer extends StatelessWidget {
+  const BuySellTextFieldContainer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 45,
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: RoqquTheme.of(context).inputBorderColor!),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  'Limit price',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.normal),
+                ),
+                const SizedBox(width: 5),
+                Icon(
+                  Remix.information_line,
+                  size: 15,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.end,
+              decoration: const InputDecoration(
+                hintText: '0.00',
+              ),
+            ),
+          ),
+          Text(
+            'USD',
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(fontWeight: FontWeight.normal),
+          ),
         ],
       ),
     );

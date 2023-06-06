@@ -13,6 +13,7 @@ import 'package:roqqu_test/shared_widgets/roqqu_button.widget.dart';
 import 'package:roqqu_test/styles/assets.manager.dart';
 import 'package:roqqu_test/styles/roqqu.colors.dart';
 import 'package:roqqu_test/styles/roqqu.theme.dart';
+import 'package:roqqu_test/trials.dart';
 import 'package:roqqu_test/utils.dart';
 
 import 'widgets/coin_change.widget.dart';
@@ -112,7 +113,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           const SizedBox(width: 20),
           Expanded(
             child: RoqquButton(
-              onTap: () {},
+              onTap: () {
+                Get.to(() => MyPage());
+              },
               text: 'Sell',
               height: 35,
               color: alertColor,
@@ -156,33 +159,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
     );
   }
-
-  // Widget _buildPopupMenu(BuildContext context) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(10),
-  //       color: Colors.grey,
-  //     ),
-  //     child: PopupMenuButton<String>(
-  //       itemBuilder: (BuildContext context) {
-  //         return <PopupMenuEntry<String>>[
-  //           PopupMenuItem<String>(
-  //             value: 'Option 1',
-  //             child: Text('Option 1'),
-  //           ),
-  //           PopupMenuItem<String>(
-  //             value: 'Option 2',
-  //             child: Text('Option 2'),
-  //           ),
-  //           PopupMenuItem<String>(
-  //             value: 'Option 3',
-  //             child: Text('Option 3'),
-  //           ),
-  //         ];
-  //       },
-  //     ),
-  //   );
-  // }
 
   Widget _buildAppBar(BuildContext context) {
     return Padding(
@@ -286,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildChartSection(BuildContext context) {
     return SizedBox(
-      height: Get.height * 0.5,
+      height: Get.height * 0.6,
       child: Column(
         children: [
           SizedBox(width: Get.width),
@@ -298,10 +274,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: const [
+              children: [
                 ChartsTabWidget(),
-                OrderBookTabWidget(),
-                RecentTradesTabWidget(),
+                const OrderBookTabWidget(),
+                const RecentTradesTabWidget(),
               ],
             ),
           ),

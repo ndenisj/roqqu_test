@@ -36,19 +36,10 @@ class HomeController extends GetxController {
   ];
   RxList<String> symbols = <String>[].obs;
   RxString currentSymbol = "".obs;
-  // List<Indicator> indicators = [
-  //   BollingerBandsIndicator(
-  //     length: 20,
-  //     stdDev: 2,
-  //     upperColor: const Color(0xFF2962FF),
-  //     basisColor: const Color(0xFFFF6D00),
-  //     lowerColor: const Color(0xFF2962FF),
-  //   ),
-  //   WeightedMovingAverageIndicator(
-  //     length: 100,
-  //     color: Colors.green.shade600,
-  //   ),
-  // ];
+  RxString high = "".obs;
+  RxString low = "".obs;
+  RxString volume = "".obs;
+  // RxString volume= "".obs;
 
   @override
   void onInit() {
@@ -97,6 +88,10 @@ class HomeController extends GetxController {
       // update candles
 
       candles.value = data;
+      high.value = candles[0].high.toString();
+      low.value = candles[0].low.toString();
+      volume.value = candles[0].volume.toString();
+
       currentInterval.value = interval;
       currentSymbol.value = symbol;
       logger.log('Established');
@@ -120,6 +115,10 @@ class HomeController extends GetxController {
             candles[0].open == candleTicker.candle.open) {
           // update last candle
           candles[0] = candleTicker.candle;
+          //
+          high.value = candles[0].high.toString();
+          low.value = candles[0].low.toString();
+          volume.value = candles[0].volume.toString();
         }
         // check if incoming new candle is next candle so the difrence
         // between times must be the same as last existing 2 candles

@@ -13,10 +13,11 @@ class BinanceRepository {
 
   Future<List<Candle>> fetchCandles(
       {required String symbol, required String interval, int? endTime}) async {
-    logger.log('fetchCandles() called');
+    logger.log('fetchCandles()  $symbol');
     final uri = Uri.parse(getBinanaceKlinesUri(
-        symbol: symbol, interval: interval, endTime: endTime));
+        symbol: 'BTCUSDT', interval: interval, endTime: endTime));
     final res = await http.get(uri);
+    logger.log("RESfetchCandles:: ${res.body}");
     return (jsonDecode(res.body) as List<dynamic>)
         .map((e) => Candle.fromJson(e))
         .toList()
@@ -28,6 +29,7 @@ class BinanceRepository {
     logger.log('fetchSymbols() called');
     final uri = Uri.parse(kBinanceTickerPriceURI);
     final res = await http.get(uri);
+    logger.log("RESfetchSymbols:: ${res.body}");
     return (jsonDecode(res.body) as List<dynamic>)
         .map((e) => e["symbol"] as String)
         .toList();
@@ -47,6 +49,7 @@ class BinanceRepository {
         },
       ),
     );
+    // logger.log("RESChannel:: ${channel.stream.}");
     return channel;
   }
 }

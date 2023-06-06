@@ -221,38 +221,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: const [
-                CoinChangeWidget(
-                  icon: Remix.time_line,
-                  changeLabel: '24h change',
-                  changeValue: '520.80 +1.25%',
-                  isSuccess: true,
-                ),
-                SizedBox(width: 5),
-                CoinChangeWidget(
-                  icon: Remix.arrow_down_line,
-                  changeLabel: '24h high',
-                  changeValue: '520.80 +1.25%',
-                  isSuccess: false,
-                ),
-                SizedBox(width: 5),
-                CoinChangeWidget(
-                  icon: Remix.arrow_up_line,
-                  changeLabel: '24h low',
-                  changeValue: '520.80 +1.25%',
-                  isSuccess: false,
-                ),
-                SizedBox(width: 5),
-                CoinChangeWidget(
-                  icon: Remix.bar_chart_2_line,
-                  changeLabel: '24h volume',
-                  changeValue: '520.80 +1.25%',
-                  isSuccess: false,
-                  isLast: true,
-                ),
-              ],
+            child: Obx(
+              () => ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  CoinChangeWidget(
+                    icon: Remix.time_line,
+                    changeLabel: '24h change',
+                    changeValue: '520.80 +1.25%',
+                    isSuccess: true,
+                  ),
+                  SizedBox(width: 5),
+                  CoinChangeWidget(
+                    icon: Remix.arrow_up_line,
+                    changeLabel: '24h high',
+                    changeValue: '${controller.high} +1.25%',
+                    isSuccess: false,
+                  ),
+                  SizedBox(width: 5),
+                  CoinChangeWidget(
+                    icon: Remix.arrow_down_line,
+                    changeLabel: '24h low',
+                    changeValue: '${controller.low} +1.25%',
+                    isSuccess: false,
+                  ),
+                  SizedBox(width: 5),
+                  CoinChangeWidget(
+                    icon: Remix.bar_chart_2_line,
+                    changeLabel: '24h volume',
+                    changeValue: '${controller.volume} +1.25%',
+                    isSuccess: false,
+                    isLast: true,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

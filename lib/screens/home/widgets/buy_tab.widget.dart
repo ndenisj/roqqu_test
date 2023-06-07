@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remixicon/remixicon.dart';
+import 'package:roqqu_test/styles/roqqu.colors.dart';
 import 'package:roqqu_test/styles/roqqu.theme.dart';
 
 class BuyTabWidget extends StatefulWidget {
@@ -31,11 +32,112 @@ class _BuyTabWidgetState extends State<BuyTabWidget>
       children: [
         _buildBuySubTab(context),
         const SizedBox(height: 20),
-        const Expanded(
+        Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                BuySellTextFieldContainer(),
+                BuySellTextFieldContainer(title: 'Limit price'),
+                SizedBox(height: 20),
+                BuySellTextFieldContainer(title: 'Amount'),
+                SizedBox(height: 20),
+                BuySellTextFieldContainer(
+                  title: 'Type',
+                  showDropdown: true,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Icon(
+                      Remix.checkbox_blank_line,
+                      size: 15,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
+                    ),
+                    SizedBox(width: 5),
+                    Text('Post Only'),
+                    SizedBox(width: 10),
+                    Icon(
+                      Remix.information_line,
+                      size: 15,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total'),
+                    Text('0.00'),
+                  ],
+                ),
+                SizedBox(height: 20),
+                GradientButton(),
+                SizedBox(height: 10),
+                Divider(),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Total account value'),
+                        Text(
+                          '0.00',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'NGN',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Open Orders'),
+                        Text(
+                          '0.00',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Available'),
+                        Text(
+                          '0.00',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Text('Deposit'),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -70,8 +172,43 @@ class _BuyTabWidgetState extends State<BuyTabWidget>
   }
 }
 
+class GradientButton extends StatelessWidget {
+  const GradientButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40.0,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [
+          gradientColor1,
+          gradientColor2,
+          gradientColor3,
+        ]),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        child: Text('Buy BTC'),
+      ),
+    );
+  }
+}
+
 class BuySellTextFieldContainer extends StatelessWidget {
+  final String title;
+  final bool showDropdown;
+
   const BuySellTextFieldContainer({
+    required this.title,
+    this.showDropdown = false,
     super.key,
   });
 
@@ -92,7 +229,7 @@ class BuySellTextFieldContainer extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  'Limit price',
+                  title,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
@@ -107,23 +244,45 @@ class BuySellTextFieldContainer extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              style: Theme.of(context).textTheme.bodyMedium,
-              textAlign: TextAlign.end,
-              decoration: const InputDecoration(
-                hintText: '0.00',
-              ),
-            ),
-          ),
-          Text(
-            'USD',
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(fontWeight: FontWeight.normal),
-          ),
+          showDropdown
+              ? Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Good till cancelled',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.end,
+                      ),
+                      Icon(Remix.arrow_down_s_line),
+                    ],
+                  ),
+                )
+              : SizedBox(),
+          !showDropdown
+              ? Expanded(
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.end,
+                    decoration: const InputDecoration(
+                      hintText: '0.00',
+                    ),
+                  ),
+                )
+              : SizedBox(),
+          !showDropdown
+              ? Text(
+                  'USD',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.normal),
+                )
+              : SizedBox(),
         ],
       ),
     );

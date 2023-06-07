@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       builder: (BuildContext context) {
         return Container(
           padding: const EdgeInsets.all(20),
-          height: Get.height * 0.7,
+          height: Get.height * 0.8,
           child: Column(
             children: [
               _buildBuySellTab(context),
